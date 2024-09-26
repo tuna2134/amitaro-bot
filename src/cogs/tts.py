@@ -25,7 +25,7 @@ class TTS(commands.Cog):
             response.raise_for_status()
             return await response.read()
 
-    @app_commands.command(description="...")
+    @app_commands.command(description="ボイスチャンネルに参加して読み上げを開始します")
     async def join(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
         if interaction.user.voice is None or interaction.user.voice.channel is None:
@@ -41,7 +41,9 @@ class TTS(commands.Cog):
                 )
             )
 
-    @app_commands.command(description="...")
+    @app_commands.command(
+        description="ボイスチャンネルから抜けて読み上げを終了します。"
+    )
     async def leave(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
         voice_client = interaction.guild.voice_client
