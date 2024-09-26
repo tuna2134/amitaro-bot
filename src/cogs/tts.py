@@ -20,7 +20,7 @@ class TTS(commands.Cog):
     async def synthesize(self, ident: str, text: str) -> bytes:
         async with self.__session.post(
             f"{API_ENDPOINT}/synthesize",
-            json={"ident": ident, "text": text, "sdp_ratio": 1.4}
+            json={"ident": ident, "text": text, "sdp_ratio": 1.4},
         ) as response:
             response.raise_for_status()
             return await response.read()
@@ -34,7 +34,12 @@ class TTS(commands.Cog):
             voice_client = await interaction.user.voice.channel.connect()
             self.connected_channels.append(interaction.channel.id)
             await interaction.followup.send("接続しました。")
-            voice_client.play(discord.FFmpegPCMAudio(BytesIO(await self.synthesize("amitaro", "接続しました。")), pipe=True))
+            voice_client.play(
+                discord.FFmpegPCMAudio(
+                    BytesIO(await self.synthesize("amitaro", "接続しました。")),
+                    pipe=True,
+                )
+            )
 
     @app_commands.command(description="...")
     async def leave(self, interaction: discord.Interaction) -> None:
@@ -57,10 +62,11 @@ class TTS(commands.Cog):
         if voice_client is None:
             self.connected_channels.remove(message.channel.id)
             return
-        voice_client.play(discord.FFmpegPCMAudio(
-            BytesIO(await self.synthesize("amitaro", message.content)),
-            pipe=True
-        ))
+        voice_client.play(
+            discord.FFmpegPCMAudio(
+                BytesIO(await self.synthesize("amitaro", message.content)), pipe=True
+            )
+        )
 
 
 async def setup(bot: commands.Bot) -> None:
